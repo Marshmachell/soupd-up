@@ -2,11 +2,13 @@ package net.marsh.soupdup;
 
 import net.fabricmc.api.ModInitializer;
 
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.marsh.soupdup.block.ModBlocks;
 import net.marsh.soupdup.block.entity.ModBlockEntities;
 import net.marsh.soupdup.item.ModItemGroups;
 import net.marsh.soupdup.item.ModTags;
 import net.marsh.soupdup.item.ModItems;
+import net.minecraft.client.render.RenderLayer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
