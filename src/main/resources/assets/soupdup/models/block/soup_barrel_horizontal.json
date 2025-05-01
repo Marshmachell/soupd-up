@@ -1,0 +1,50 @@
+{
+  "credit": "Marshmachell & Falanta",
+  "parent": "block/block",
+  "elements": [
+    {  "from": [ 0, 0, 0 ],
+      "to": [ 16, 16, 16 ],
+      "faces": {
+        "down":  { "texture": "#barrel_side", "cullface": "down", "rotation":  180 },
+        "up":    { "texture": "#barrel_side", "cullface": "up" },
+        "north": { "texture": "#barrel_top", "cullface": "north" },
+        "south": { "texture": "#barrel_bottom", "cullface": "south" },
+        "west":  { "texture": "#barrel_side", "cullface": "west", "rotation":  270 },
+        "east":  { "texture": "#barrel_side", "cullface": "east", "rotation":  90 }
+      }
+    },
+    {
+      "from": [7, 3, -4],
+      "to": [9, 5, 0],
+      "rotation": {"angle": 0, "axis": "y", "origin": [8, 3, -1]},
+      "faces": {
+        "north": {"uv": [0, 6, 4, 10], "texture": "#spigot", "cullface": "north"},
+        "east": {"uv": [6, 8, 14, 12], "texture": "#spigot", "cullface": "north"},
+        "west": {"uv": [6, 8, 14, 12], "texture": "#spigot", "cullface": "north"},
+        "up": {"uv": [6, 4, 14, 8], "rotation": 90, "texture": "#spigot", "cullface": "north"},
+        "down": {"uv": [6, 0, 14, 4], "rotation": 90, "texture": "#spigot", "cullface": "north"}
+      }
+    },
+    {
+      "from": [6.5, 5, -3],
+      "to": [9.5, 7, -3],
+      "rotation": {"angle": 0, "axis": "y", "origin": [8, 6, -3]},
+      "faces": {
+        "north": {"uv": [0, 10, 6, 14], "texture": "#spigot", "cullface": "north"},
+        "south": {"uv": [6, 10, 0, 14], "texture": "#spigot", "cullface": "north"}
+      }
+    },
+    {
+      "from": [7, 2, -4],
+      "to": [9, 3, -2],
+      "rotation": {"angle": 0, "axis": "y", "origin": [8, 1, -1]},
+      "faces": {
+        "north": {"uv": [10, 12, 14, 14], "texture": "#spigot", "cullface": "north"},
+        "east": {"uv": [6, 12, 10, 14], "texture": "#spigot", "cullface": "north"},
+        "south": {"uv": [4, 6, 6, 10], "rotation": 90, "texture": "#spigot", "cullface": "north"},
+        "west": {"uv": [6, 12, 10, 14], "texture": "#spigot", "cullface": "north"},
+        "down": {"uv": [10, 0, 14, 4], "rotation": 90, "texture": "#spigot", "cullface": "north"}
+      }
+    }
+  ]
+}

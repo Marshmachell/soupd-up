@@ -1,0 +1,11 @@
+{
+	"credit": "Marshmachell & Falanta",
+	"parent": "soupdup:block/soup_barrel_horizontal",
+	"textures": {
+		"barrel_side": "soupdup:block/soup_barrel_side",
+		"barrel_bottom": "soupdup:block/soup_barrel_bottom",
+		"barrel_top": "soupdup:block/soup_barrel_top",
+		"spigot": "soupdup:block/soup_barrel_spigot",
+		"particle": "soupdup:block/soup_barrel_side"
+	}
+}

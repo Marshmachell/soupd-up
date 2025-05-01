@@ -1,0 +1,12 @@
+{
+  "itemgroup.soupdup.soupd_up_items": "Soup'd Up: Супы",
+
+  "item.soupdup.soup_barrel": "Бочка для супа",
+
+  "item.soupdup.salmon_soup": "Суп из лосося",
+  "item.soupdup.hearty_salmon_soup": "Сытный суп из лосося",
+  "item.soupdup.cod_soup": "Суп из трески",
+  "item.soupdup.hearty_cod_soup": "Сытный суп из трески",
+
+  "tag.item.soupdup.soup": "Суп"
+}

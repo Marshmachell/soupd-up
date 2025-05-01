@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:bone",
+    "minecraft:potato",
+    "minecraft:cod",
+    "minecraft:bowl"
+  ],
+  "result": {
+    "count": 1,
+    "id": "soupdup:hearty_cod_soup"
+  }
+}

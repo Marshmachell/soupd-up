@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": "#minecraft:planks",
+    "S": "#minecraft:wooden_slabs",
+    "B": "minecraft:bowl"
+  },
+  "pattern": [
+    "PSP",
+    "PBP",
+    "PSP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "soupdup:soup_barrel"
+  }
+}
