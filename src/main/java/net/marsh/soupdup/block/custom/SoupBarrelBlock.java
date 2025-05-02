@@ -55,55 +55,61 @@ public class SoupBarrelBlock extends BlockWithEntity {
 
     @Override
     protected ActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (world.getBlockEntity(pos) instanceof SoupBarrelBlockEntity soupBarrelBlockEntity) {
-            if (world.isClient) {
-                return ActionResult.SUCCESS;
-            } else {
-                if (isSoup(stack)) {
-                    soupBarrelBlockEntity.markDirty();
-                    if (soupBarrelBlockEntity.getSoup().isEmpty()) {
-                        soupBarrelBlockEntity.setSoup(stack.getItem().toString());
-                        soupBarrelBlockEntity.setSoupCount(1);
-                        exchangeSoup((ServerPlayerEntity) player, stack, new ItemStack(Items.BOWL));
-                        world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_FILL, SoundCategory.BLOCKS, 1.0f, 0.7f);
-                        return ActionResult.SUCCESS;
-                    } else {
-                        if (soupBarrelBlockEntity.getSoup().equals(stack.getItem().toString())) {
-                            if (soupBarrelBlockEntity.getSoupCount() >= soupBarrelBlockEntity.size()) {
-                                world.playSound(null, pos, SoundEvents.BLOCK_BARREL_CLOSE, SoundCategory.BLOCKS, 1.0f, 0.75f);
-                                return ActionResult.PASS;
-                            } else {
-                                soupBarrelBlockEntity.addSoupCount(1);
-                                exchangeSoup((ServerPlayerEntity) player, stack, new ItemStack(Items.BOWL));
-                                world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_FILL, SoundCategory.BLOCKS, 1.0f, 0.7f);
-                                return ActionResult.SUCCESS;
-                            }
-                        } else {
-                            world.playSound(null, pos, SoundEvents.BLOCK_BARREL_CLOSE, SoundCategory.BLOCKS, 1.0f, 0.75f);
-                            return ActionResult.PASS;
-                        }
-                    }
-                } else if (isBowl(stack)) {
-                    soupBarrelBlockEntity.markDirty();
-                    changeSpigotState(state, world, pos);
-                    if (!soupBarrelBlockEntity.getSoup().isEmpty() && soupBarrelBlockEntity.getSoupCount() > 0) {
-                        giveSoup((ServerPlayerEntity) player, soupBarrelBlockEntity.getSoup());
-                        soupBarrelBlockEntity.removeSoupCount(1);
-                        if (soupBarrelBlockEntity.getSoupCount() == 0) {
-                            soupBarrelBlockEntity.setSoup("");
-                        }
-                        stack.splitUnlessCreative(1, player);
-                        world.playSound(null, pos, SoundEvents.ITEM_HONEY_BOTTLE_DRINK.value(), SoundCategory.BLOCKS, 1.0f, 0.75f);
-                        return ActionResult.SUCCESS;
-                    } else {
-                        world.playSound(null, pos, SoundEvents.BLOCK_CHAIN_BREAK, SoundCategory.BLOCKS, 1.0f, 1.25f);
-                        return ActionResult.SUCCESS;
-                    }
-                }
-            }
-            return ActionResult.PASS;
+        if (!(world.getBlockEntity(pos) instanceof SoupBarrelBlockEntity soupBarrel)) {
+            return ActionResult.SUCCESS;
         }
-        return ActionResult.PASS;
+
+        if (world.isClient()) {
+            return ActionResult.SUCCESS;
+        }
+
+        soupBarrel.markDirty();
+        ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
+
+        if (isSoup(stack)) {
+            return soupInteraction(stack, soupBarrel, serverPlayer, world, pos);
+        } else if (isBowl(stack)) {
+            return bowlInteraction(stack, state, soupBarrel, serverPlayer, world, pos);
+        }
+
+        return ActionResult.SUCCESS;
+    }
+
+    private ActionResult soupInteraction(ItemStack stack, SoupBarrelBlockEntity barrel, ServerPlayerEntity player, World world, BlockPos pos) {
+        if (barrel.getSoup().isEmpty()) {
+            barrel.setSoup(stack.getItem().toString());
+            barrel.setSoupCount(1);
+        } else if (!barrel.getSoup().equals(stack.getItem().toString()) || barrel.isFull()) {
+            world.playSound(null, pos, SoundEvents.BLOCK_BARREL_CLOSE, SoundCategory.BLOCKS, 1.0f, 0.75f);
+            return ActionResult.PASS;
+        } else {
+            barrel.addSoupCount(1);
+        }
+
+        exchangeSoup(player, stack, new ItemStack(Items.BOWL));
+        world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_FILL, SoundCategory.BLOCKS, 1.0f, soundPitcher(barrel, 0.5f, 0.35f));
+        return ActionResult.SUCCESS;
+    }
+
+    private ActionResult bowlInteraction(ItemStack stack, BlockState state, SoupBarrelBlockEntity barrel, ServerPlayerEntity player, World world, BlockPos pos) {
+        changeSpigotState(state, world, pos);
+
+        if (barrel.isEmpty()) {
+            world.playSound(null, pos, SoundEvents.BLOCK_CHAIN_BREAK, SoundCategory.BLOCKS, 1.0f, 1.25f);
+            return ActionResult.SUCCESS;
+        }
+
+        giveSoup(player, barrel.getSoup());
+        barrel.removeSoupCount(1);
+        if (barrel.isEmpty()) {
+            barrel.setSoup("");
+        }
+        stack.splitUnlessCreative(1, player);
+        world.playSound(null, pos, SoundEvents.ITEM_HONEY_BOTTLE_DRINK.value(), SoundCategory.BLOCKS, 1.0f, 0.75f);
+        return ActionResult.SUCCESS;
+    }
+    private float soundPitcher(SoupBarrelBlockEntity soupBarrelBlockEntity, float start, float maxDiff) {
+        return (start + (maxDiff * ((float) soupBarrelBlockEntity.getSoupCount() / (float) soupBarrelBlockEntity.size())));
     }
     private void exchangeSoup(ServerPlayerEntity player, ItemStack stack, ItemStack bowl) {
         int selectedSlot = player.getInventory().getSelectedSlot();
@@ -139,6 +145,10 @@ public class SoupBarrelBlock extends BlockWithEntity {
     }
     private boolean isBowl(ItemStack stack) {
         return stack.getItem() == Items.BOWL;
+    }
+    @Override
+    protected void onStateReplaced(BlockState state, ServerWorld world, BlockPos pos, boolean moved) {
+        ItemScatterer.onStateReplaced(state, world, pos);
     }
 
     @Override

@@ -53,6 +53,12 @@ public class SoupBarrelBlockEntity extends BlockEntity{
     public void removeSoupCount(int soup_count) {
         this.soup_count -= soup_count;
     }
+    public boolean isEmpty() {
+        return this.soup_count <= 0;
+    }
+    public boolean isFull() {
+        return this.soup_count >= this.size();
+    }
 
     public int size() {
         return 54;
