@@ -21,6 +21,8 @@ public class ModItemGroups {
                         entries.add(ModItems.HEARTY_SALMON_SOUP);
                         entries.add(ModItems.COD_SOUP);
                         entries.add(ModItems.HEARTY_COD_SOUP);
+                        entries.add(ModItems.SEA_SOUP);
+                        entries.add(ModItems.CHORUS_SOUP);
                     })
                     .build());
     public static void registerItemGroups() {

@@ -5,6 +5,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.marsh.soupdup.block.ModBlocks;
 import net.marsh.soupdup.block.entity.ModBlockEntities;
+import net.marsh.soupdup.item.ModConsumableComponents;
 import net.marsh.soupdup.item.ModItemGroups;
 import net.marsh.soupdup.item.ModTags;
 import net.marsh.soupdup.item.ModItems;

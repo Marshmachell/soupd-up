@@ -101,15 +101,16 @@ public class SoupBarrelBlock extends BlockWithEntity {
                     }
                 }
             }
-            return ActionResult.SUCCESS;
+            return ActionResult.PASS;
         }
-        return ActionResult.SUCCESS;
+        return ActionResult.PASS;
     }
     private void exchangeSoup(ServerPlayerEntity player, ItemStack stack, ItemStack bowl) {
+        int selectedSlot = player.getInventory().getSelectedSlot();
         stack.splitUnlessCreative(1, player);
 
         if (!player.getGameMode().isCreative()) {
-            boolean wasAdded = player.getInventory().insertStack(bowl);
+            boolean wasAdded = player.getInventory().insertStack(selectedSlot, bowl);
             if (!wasAdded) {
                 player.dropItem(bowl, false);
             }
@@ -118,8 +119,8 @@ public class SoupBarrelBlock extends BlockWithEntity {
     private void giveSoup(ServerPlayerEntity player, String soup_string) {
         Identifier soup_id = Identifier.of(soup_string);
         ItemStack soup = Registries.ITEM.get(soup_id).getDefaultStack();
-        boolean wasAdded = player.getInventory().insertStack(soup);
 
+        boolean wasAdded = player.getInventory().insertStack(soup);
         if (!wasAdded) {
             player.dropItem(soup, false);
         }
