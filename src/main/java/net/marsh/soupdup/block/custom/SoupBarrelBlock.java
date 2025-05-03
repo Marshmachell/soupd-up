@@ -57,7 +57,7 @@ public class SoupBarrelBlock extends BlockWithEntity {
             return this.bowlInteraction(stack, state, soupBarrel, serverPlayer, world, pos);
         }
 
-        player.sendMessage(Text.of(this.calculateComparatorOutput(world.getBlockEntity(pos)) + ": " + soupBarrel.getSoupCount()), false);
+        //player.sendMessage(Text.of(this.calculateComparatorOutput(world.getBlockEntity(pos)) + ": " + soupBarrel.getSoupCount()), false);
 
         return ActionResult.SUCCESS;
     }
@@ -159,7 +159,7 @@ public class SoupBarrelBlock extends BlockWithEntity {
         int power = 0;
         if (blockEntity instanceof SoupBarrelBlockEntity barrel) {
             int[] thresholds = {0, 4, 8, 11, 15, 19, 22, 26, 30, 33, 37, 41, 44, 48, 52, 54};
-            for (int i = 1; i < thresholds.length; i++) {
+            for (int i = 0; i < thresholds.length; i++) {
                 if (barrel.getSoupCount() <= thresholds[i]) {
                     return i;
                 }
