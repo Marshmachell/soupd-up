@@ -7,6 +7,6 @@ import net.minecraft.item.consume.ApplyEffectsConsumeEffect;
 
 import static net.minecraft.component.type.ConsumableComponents.food;
 
-public class ModConsumableComponents {
+public class SoupdUpConsumableComponents {
     public static final ConsumableComponent SEA_SOUP = food().consumeEffect(new ApplyEffectsConsumeEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 60, 0), 0.3F)).build();
 }

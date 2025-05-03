@@ -1,37 +1,23 @@
 package net.marsh.soupdup.block.custom;
 
 import com.mojang.serialization.MapCodec;
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityType;
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.marsh.soupdup.block.ModBlocks;
 import net.marsh.soupdup.block.entity.custom.SoupBarrelBlockEntity;
-import net.marsh.soupdup.item.ModTags;
+import net.marsh.soupdup.SoupdUpTags;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.block.entity.DecoratedPotBlockEntity;
-import net.minecraft.block.entity.LecternBlockEntity;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
-import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.stat.Stats;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.IntProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.text.PlainTextContent;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextContent;
 import net.minecraft.util.*;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -63,19 +49,20 @@ public class SoupBarrelBlock extends BlockWithEntity {
             return ActionResult.SUCCESS;
         }
 
-        soupBarrel.markDirty();
         ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
 
         if (isSoup(stack)) {
-            return soupInteraction(stack, soupBarrel, serverPlayer, world, pos);
+            return this.soupInteraction(stack, soupBarrel, serverPlayer, world, pos);
         } else if (isBowl(stack)) {
-            return bowlInteraction(stack, state, soupBarrel, serverPlayer, world, pos);
+            return this.bowlInteraction(stack, state, soupBarrel, serverPlayer, world, pos);
         }
+
+        player.sendMessage(Text.of(this.calculateComparatorOutput(world.getBlockEntity(pos)) + ": " + soupBarrel.getSoupCount()), false);
 
         return ActionResult.SUCCESS;
     }
 
-    private ActionResult soupInteraction(ItemStack stack, SoupBarrelBlockEntity barrel, ServerPlayerEntity player, World world, BlockPos pos) {
+    public ActionResult soupInteraction(ItemStack stack, SoupBarrelBlockEntity barrel, ServerPlayerEntity player, World world, BlockPos pos) {
         if (barrel.getSoup().isEmpty()) {
             barrel.setSoup(stack.getItem().toString());
             barrel.setSoupCount(1);
@@ -86,32 +73,35 @@ public class SoupBarrelBlock extends BlockWithEntity {
             barrel.addSoupCount(1);
         }
 
-        exchangeSoup(player, stack, new ItemStack(Items.BOWL));
-        world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_FILL, SoundCategory.BLOCKS, 1.0f, soundPitcher(barrel, 0.5f, 0.35f));
+        barrel.markDirty();
+        this.exchangeSoup(player, stack, new ItemStack(Items.BOWL));
+        world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_FILL, SoundCategory.BLOCKS, 1.0f, this.soundPitcher(barrel, 0.5f, 0.35f));
         return ActionResult.SUCCESS;
     }
 
-    private ActionResult bowlInteraction(ItemStack stack, BlockState state, SoupBarrelBlockEntity barrel, ServerPlayerEntity player, World world, BlockPos pos) {
-        changeSpigotState(state, world, pos);
+    public ActionResult bowlInteraction(ItemStack stack, BlockState state, SoupBarrelBlockEntity barrel, ServerPlayerEntity player, World world, BlockPos pos) {
+        this.changeSpigotState(state, world, pos);
 
         if (barrel.isEmpty()) {
             world.playSound(null, pos, SoundEvents.BLOCK_CHAIN_BREAK, SoundCategory.BLOCKS, 1.0f, 1.25f);
             return ActionResult.SUCCESS;
         }
 
-        giveSoup(player, barrel.getSoup());
+        this.giveSoup(player, barrel.getSoup());
         barrel.removeSoupCount(1);
         if (barrel.isEmpty()) {
             barrel.setSoup("");
         }
+
+        barrel.markDirty();
         stack.splitUnlessCreative(1, player);
         world.playSound(null, pos, SoundEvents.ITEM_HONEY_BOTTLE_DRINK.value(), SoundCategory.BLOCKS, 1.0f, 0.75f);
         return ActionResult.SUCCESS;
     }
-    private float soundPitcher(SoupBarrelBlockEntity soupBarrelBlockEntity, float start, float maxDiff) {
+    public float soundPitcher(SoupBarrelBlockEntity soupBarrelBlockEntity, float start, float maxDiff) {
         return (start + (maxDiff * ((float) soupBarrelBlockEntity.getSoupCount() / (float) soupBarrelBlockEntity.size())));
     }
-    private void exchangeSoup(ServerPlayerEntity player, ItemStack stack, ItemStack bowl) {
+    public void exchangeSoup(ServerPlayerEntity player, ItemStack stack, ItemStack bowl) {
         int selectedSlot = player.getInventory().getSelectedSlot();
         stack.splitUnlessCreative(1, player);
 
@@ -122,7 +112,7 @@ public class SoupBarrelBlock extends BlockWithEntity {
             }
         }
     }
-    private void giveSoup(ServerPlayerEntity player, String soup_string) {
+    public void giveSoup(ServerPlayerEntity player, String soup_string) {
         Identifier soup_id = Identifier.of(soup_string);
         ItemStack soup = Registries.ITEM.get(soup_id).getDefaultStack();
 
@@ -131,7 +121,7 @@ public class SoupBarrelBlock extends BlockWithEntity {
             player.dropItem(soup, false);
         }
     }
-    private void changeSpigotState(BlockState state, World world, BlockPos pos) {
+    public void changeSpigotState(BlockState state, World world, BlockPos pos) {
         switch (state.get(SPIGOT)) {
             case 0:
                 world.setBlockState(pos, state.with(SPIGOT, 1), Block.NOTIFY_ALL); break;
@@ -140,10 +130,10 @@ public class SoupBarrelBlock extends BlockWithEntity {
         }
     }
 
-    private boolean isSoup(ItemStack stack) {
-        return stack.isIn(ModTags.Items.SOUPS);
+    public boolean isSoup(ItemStack stack) {
+        return stack.isIn(SoupdUpTags.Items.SOUPS);
     }
-    private boolean isBowl(ItemStack stack) {
+    public boolean isBowl(ItemStack stack) {
         return stack.getItem() == Items.BOWL;
     }
     @Override
@@ -154,6 +144,29 @@ public class SoupBarrelBlock extends BlockWithEntity {
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         return this.getDefaultState().with(SPIGOT, 0).with(FACING, ctx.getHorizontalPlayerFacing().getOpposite());
+    }
+    @Override
+    protected boolean hasComparatorOutput(BlockState state) {
+        return true;
+    }
+
+    @Override
+    protected int getComparatorOutput(BlockState state, World world, BlockPos pos) {
+        return calculateComparatorOutput(world.getBlockEntity(pos));
+    }
+
+    public int calculateComparatorOutput(BlockEntity blockEntity) {
+        int power = 0;
+        if (blockEntity instanceof SoupBarrelBlockEntity barrel) {
+            int[] thresholds = {0, 4, 8, 11, 15, 19, 22, 26, 30, 33, 37, 41, 44, 48, 52, 54};
+            for (int i = 1; i < thresholds.length; i++) {
+                if (barrel.getSoupCount() <= thresholds[i]) {
+                    return i;
+                }
+            }
+            return 15;
+        }
+        return power;
     }
 
     @Override

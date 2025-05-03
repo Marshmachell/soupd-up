@@ -2,14 +2,10 @@ package net.marsh.soupdup;
 
 import net.fabricmc.api.ModInitializer;
 
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.marsh.soupdup.block.ModBlocks;
-import net.marsh.soupdup.block.entity.ModBlockEntities;
-import net.marsh.soupdup.item.ModConsumableComponents;
-import net.marsh.soupdup.item.ModItemGroups;
-import net.marsh.soupdup.item.ModTags;
-import net.marsh.soupdup.item.ModItems;
-import net.minecraft.client.render.RenderLayer;
+import net.marsh.soupdup.block.SoupdUpBlocks;
+import net.marsh.soupdup.block.entity.SoupdUpBlockEntities;
+import net.marsh.soupdup.item.SoupdUpItemGroups;
+import net.marsh.soupdup.item.SoupdUpItems;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,9 +15,9 @@ public class SoupdUp implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ModItemGroups.registerItemGroups();
-		ModItems.registerModItems();
-		ModBlocks.registerModBlocks();
-		ModBlockEntities.registerBlockEntities();
+		SoupdUpItemGroups.registerItemGroups();
+		SoupdUpItems.registerModItems();
+		SoupdUpBlocks.registerModBlocks();
+		SoupdUpBlockEntities.registerBlockEntities();
 	}
 }

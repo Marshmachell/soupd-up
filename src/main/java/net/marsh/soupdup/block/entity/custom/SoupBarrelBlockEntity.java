@@ -1,7 +1,7 @@
 package net.marsh.soupdup.block.entity.custom;
 
 import com.mojang.serialization.Codec;
-import net.marsh.soupdup.block.entity.ModBlockEntities;
+import net.marsh.soupdup.block.entity.SoupdUpBlockEntities;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -16,7 +16,7 @@ public class SoupBarrelBlockEntity extends BlockEntity{
     private String soup = "";
     private int soup_count = 0;
     public SoupBarrelBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.SOUP_BARREL_BE, pos, state);
+        super(SoupdUpBlockEntities.SOUP_BARREL_BE, pos, state);
     }
 
     @Override

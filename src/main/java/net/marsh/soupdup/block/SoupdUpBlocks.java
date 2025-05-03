@@ -16,9 +16,8 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
 
-public class ModBlocks {
+public class SoupdUpBlocks {
 
     public static final Block SOUP_BARREL = registerBlock("soup_barrel",
             new SoupBarrelBlock(AbstractBlock.Settings.create()
