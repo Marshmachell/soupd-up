@@ -3,7 +3,10 @@
   "category": "misc",
   "ingredients": [
     "minecraft:potato",
-    "minecraft:salmon",
+    [
+      "minecraft:potato",
+      "minecraft:carrot"
+    ],
     "minecraft:bowl"
   ],
   "result": {

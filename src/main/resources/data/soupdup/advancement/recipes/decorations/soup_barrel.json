@@ -45,7 +45,7 @@
   ],
   "rewards": {
     "recipes": [
-      "minecraft:barrel"
+      "soupdup:soup_barrel"
     ]
   }
 }
