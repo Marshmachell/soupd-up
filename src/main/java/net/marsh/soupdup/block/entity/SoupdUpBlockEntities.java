@@ -11,7 +11,7 @@ import net.minecraft.util.Identifier;
 
 public class SoupdUpBlockEntities {
     public static final BlockEntityType<SoupBarrelBlockEntity> SOUP_BARREL_BE =
-            Registry.register(Registries.BLOCK_ENTITY_TYPE, Identifier.of(SoupdUp.MOD_ID, "soup_barrel_be"),
+            Registry.register(Registries.BLOCK_ENTITY_TYPE, Identifier.of(SoupdUp.MOD_ID, "soup_barrel"),
                     FabricBlockEntityTypeBuilder.create(SoupBarrelBlockEntity::new, SoupdUpBlocks.SOUP_BARREL).build());
     public static void registerBlockEntities() {
         SoupdUp.LOGGER.info("Registering Block Entities for " + SoupdUp.MOD_ID);

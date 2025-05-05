@@ -30,9 +30,14 @@
     "has_bowl": {
       "conditions": {
         "items": [
-          "minecraft:bowl"
+          {
+            "items": [
+              "minecraft:bowl"
+            ]
+          }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     }
   },
   "requirements": [

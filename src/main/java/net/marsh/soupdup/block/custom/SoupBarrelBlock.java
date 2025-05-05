@@ -41,14 +41,17 @@ public class SoupBarrelBlock extends BlockWithEntity {
 
     @Override
     protected ActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (!(world.getBlockEntity(pos) instanceof SoupBarrelBlockEntity soupBarrel)) {
-            return ActionResult.SUCCESS;
-        }
+        SoupBarrelBlockEntity soupBarrel = (SoupBarrelBlockEntity) world.getBlockEntity(pos);
+
+        //if (!(world.getBlockEntity(pos) instanceof SoupBarrelBlockEntity soupBarrel)) {
+        //    return ActionResult.SUCCESS;
+        //}
 
         if (world.isClient()) {
-            return ActionResult.SUCCESS;
+            return ActionResult.PASS;
         }
 
+        player.sendMessage(Text.of(String.valueOf(soupBarrel.getSoupType())), false);
         ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
 
         if (isSoup(stack)) {
@@ -63,10 +66,12 @@ public class SoupBarrelBlock extends BlockWithEntity {
     }
 
     public ActionResult soupInteraction(ItemStack stack, SoupBarrelBlockEntity barrel, ServerPlayerEntity player, World world, BlockPos pos) {
-        if (barrel.getSoup().isEmpty()) {
-            barrel.setSoup(stack.getItem().toString());
-            barrel.setSoupCount(1);
-        } else if (!barrel.getSoup().equals(stack.getItem().toString()) || barrel.isFull()) {
+        //player.sendMessage(Text.of(String.valueOf(stack)));
+        if (barrel.getSoupType().isEmpty()) {
+            //player.sendMessage(Text.of("was empty"));
+            barrel.setSoup(stack);
+            //barrel.setSoupCount(1);
+        } else if (!barrel.getSoupType().equals(stack) || barrel.isFull()) {
             world.playSound(null, pos, SoundEvents.BLOCK_BARREL_CLOSE, SoundCategory.BLOCKS, 1.0f, 0.75f);
             return ActionResult.PASS;
         } else {
@@ -90,11 +95,11 @@ public class SoupBarrelBlock extends BlockWithEntity {
         this.giveSoup(player, barrel.getSoup());
         barrel.removeSoupCount(1);
         if (barrel.isEmpty()) {
-            barrel.setSoup("");
+            barrel.setSoup(ItemStack.EMPTY);
         }
 
         barrel.markDirty();
-        stack.splitUnlessCreative(1, player);
+        stack.decrementUnlessCreative(1, player);
         world.playSound(null, pos, SoundEvents.ITEM_HONEY_BOTTLE_DRINK.value(), SoundCategory.BLOCKS, 1.0f, 0.75f);
         return ActionResult.SUCCESS;
     }
@@ -102,18 +107,11 @@ public class SoupBarrelBlock extends BlockWithEntity {
         return (start + (maxDiff * ((float) soupBarrelBlockEntity.getSoupCount() / (float) soupBarrelBlockEntity.size())));
     }
     public void exchangeSoup(ServerPlayerEntity player, ItemStack stack, ItemStack bowl) {
-        int selectedSlot = player.getInventory().getSelectedSlot();
-        stack.splitUnlessCreative(1, player);
-
-        if (!player.getGameMode().isCreative()) {
-            boolean wasAdded = player.getInventory().insertStack(selectedSlot, bowl);
-            if (!wasAdded) {
-                player.dropItem(bowl, false);
-            }
-        }
+        stack.decrementUnlessCreative(1, player);
+        player.giveOrDropStack(bowl);
     }
-    public void giveSoup(ServerPlayerEntity player, String soup_string) {
-        Identifier soup_id = Identifier.of(soup_string);
+    public void giveSoup(ServerPlayerEntity player, ItemStack soup_stack) {
+        Identifier soup_id = Identifier.of(soup_stack.getItem().toString());
         ItemStack soup = Registries.ITEM.get(soup_id).getDefaultStack();
 
         boolean wasAdded = player.getInventory().insertStack(soup);

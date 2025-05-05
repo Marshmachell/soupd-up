@@ -4,7 +4,10 @@ import com.mojang.serialization.Codec;
 import net.marsh.soupdup.block.entity.SoupdUpBlockEntities;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
@@ -13,8 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
 public class SoupBarrelBlockEntity extends BlockEntity{
-    private String soup = "";
-    private int soup_count = 0;
+    private ItemStack soup = ItemStack.EMPTY;
     public SoupBarrelBlockEntity(BlockPos pos, BlockState state) {
         super(SoupdUpBlockEntities.SOUP_BARREL_BE, pos, state);
     }
@@ -23,41 +25,43 @@ public class SoupBarrelBlockEntity extends BlockEntity{
     protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registries) {
         super.writeNbt(nbt, registries);
         if (!this.soup.isEmpty()) {
-            nbt.put("soup", Codec.STRING, this.soup);
-            nbt.put("soup_count", Codec.INT, this.soup_count);
+            nbt.put("item", ItemStack.CODEC, this.soup);
         }
     }
 
     @Override
     protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registries) {
         super.readNbt(nbt, registries);
-        this.soup = nbt.get("soup", Codec.STRING).orElse("");
-        this.soup_count = nbt.get("soup_count", Codec.INT).orElse(0);
+        this.soup = nbt.get("item", ItemStack.CODEC).orElse(ItemStack.EMPTY);
     }
 
-    public String getSoup() {
+    public ItemStack getSoup() {
+        return this.soup;
+    }
+    public ItemStack getSoupType() {
         return this.soup;
     }
     public int getSoupCount() {
-        return this.soup_count;
+        return this.soup.getCount();
     }
-    public void setSoup(String soup) {
+    public void setSoup(ItemStack soup) {
+        System.out.println("balls");
         this.soup = soup;
     }
     public void setSoupCount(Integer soup_count) {
-        this.soup_count = soup_count;
+        this.soup.setCount(soup_count);
     }
     public void addSoupCount(int soup_count) {
-        this.soup_count += soup_count;
+        soup.setCount(this.getSoupCount() + soup_count);
     }
     public void removeSoupCount(int soup_count) {
-        this.soup_count -= soup_count;
+        this.soup.setCount(soup.getCount() - soup_count);
     }
     public boolean isEmpty() {
-        return this.soup_count <= 0;
+        return this.soup.getCount() <= 0;
     }
     public boolean isFull() {
-        return this.soup_count >= this.size();
+        return this.soup.getCount() >= this.size();
     }
 
     public int size() {
