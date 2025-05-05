@@ -38,15 +38,15 @@ public class SoupBarrelBlockEntity extends BlockEntity{
     public ItemStack getSoup() {
         return this.soup;
     }
-    public ItemStack getSoupType() {
-        return this.soup;
+    public Item getSoupType() {
+        return this.soup.getItem();
     }
     public int getSoupCount() {
         return this.soup.getCount();
     }
     public void setSoup(ItemStack soup) {
         System.out.println("balls");
-        this.soup = soup;
+        this.soup = soup.copy();
     }
     public void setSoupCount(Integer soup_count) {
         this.soup.setCount(soup_count);
@@ -55,7 +55,7 @@ public class SoupBarrelBlockEntity extends BlockEntity{
         soup.setCount(this.getSoupCount() + soup_count);
     }
     public void removeSoupCount(int soup_count) {
-        this.soup.setCount(soup.getCount() - soup_count);
+        soup.setCount(soup.getCount() - soup_count);
     }
     public boolean isEmpty() {
         return this.soup.getCount() <= 0;

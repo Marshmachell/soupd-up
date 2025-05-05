@@ -5,6 +5,8 @@ import net.marsh.soupdup.block.entity.custom.SoupBarrelBlockEntity;
 import net.marsh.soupdup.SoupdUpTags;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.component.ComponentType;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
@@ -41,17 +43,14 @@ public class SoupBarrelBlock extends BlockWithEntity {
 
     @Override
     protected ActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        SoupBarrelBlockEntity soupBarrel = (SoupBarrelBlockEntity) world.getBlockEntity(pos);
-
-        //if (!(world.getBlockEntity(pos) instanceof SoupBarrelBlockEntity soupBarrel)) {
-        //    return ActionResult.SUCCESS;
-        //}
-
-        if (world.isClient()) {
-            return ActionResult.PASS;
+        if (!(world.getBlockEntity(pos) instanceof SoupBarrelBlockEntity soupBarrel)) {
+            return ActionResult.SUCCESS;
         }
 
-        player.sendMessage(Text.of(String.valueOf(soupBarrel.getSoupType())), false);
+        if (world.isClient()) {
+            return ActionResult.SUCCESS;
+        }
+
         ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
 
         if (isSoup(stack)) {
@@ -66,12 +65,9 @@ public class SoupBarrelBlock extends BlockWithEntity {
     }
 
     public ActionResult soupInteraction(ItemStack stack, SoupBarrelBlockEntity barrel, ServerPlayerEntity player, World world, BlockPos pos) {
-        //player.sendMessage(Text.of(String.valueOf(stack)));
-        if (barrel.getSoupType().isEmpty()) {
-            //player.sendMessage(Text.of("was empty"));
+        if (barrel.getSoup().isEmpty()) {
             barrel.setSoup(stack);
-            //barrel.setSoupCount(1);
-        } else if (!barrel.getSoupType().equals(stack) || barrel.isFull()) {
+        } else if (!barrel.getSoupType().equals(stack.getItem()) || barrel.isFull()) {
             world.playSound(null, pos, SoundEvents.BLOCK_BARREL_CLOSE, SoundCategory.BLOCKS, 1.0f, 0.75f);
             return ActionResult.PASS;
         } else {
@@ -108,16 +104,13 @@ public class SoupBarrelBlock extends BlockWithEntity {
     }
     public void exchangeSoup(ServerPlayerEntity player, ItemStack stack, ItemStack bowl) {
         stack.decrementUnlessCreative(1, player);
-        player.giveOrDropStack(bowl);
+        if (!player.getGameMode().isCreative()) player.giveOrDropStack(bowl);
     }
     public void giveSoup(ServerPlayerEntity player, ItemStack soup_stack) {
-        Identifier soup_id = Identifier.of(soup_stack.getItem().toString());
-        ItemStack soup = Registries.ITEM.get(soup_id).getDefaultStack();
-
-        boolean wasAdded = player.getInventory().insertStack(soup);
-        if (!wasAdded) {
-            player.dropItem(soup, false);
-        }
+        ItemStack soup = soup_stack.copy();
+        soup.setCount(1);
+        //System.out.println(soup.getComponents().get(DataComponentTypes.SUSPICIOUS_STEW_EFFECTS));
+        player.giveOrDropStack(soup);
     }
     public void changeSpigotState(BlockState state, World world, BlockPos pos) {
         switch (state.get(SPIGOT)) {
