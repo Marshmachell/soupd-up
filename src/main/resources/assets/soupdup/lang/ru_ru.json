@@ -1,5 +1,5 @@
 {
-  "itemgroup.soupdup.soupd_up_items": "Soup'd Up: Супы",
+  "itemgroup.soupdup.soupd_up_items": "Soup'd Up",
 
   "item.soupdup.soup_barrel": "Бочка для супа",
 
@@ -9,6 +9,7 @@
   "item.soupdup.hearty_cod_soup": "Сытный суп из трески",
   "item.soupdup.sea_soup": "Морской суп",
   "item.soupdup.chorus_soup": "Хорусовый суп",
+  "item.soupdup.mixed_suspicious_stew": "Смешанное загадочное рагу",
 
   "tag.item.soupdup.soup": "Суп"
 }

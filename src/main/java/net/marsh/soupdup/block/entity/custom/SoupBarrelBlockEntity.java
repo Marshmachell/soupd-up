@@ -1,13 +1,11 @@
 package net.marsh.soupdup.block.entity.custom;
 
-import com.mojang.serialization.Codec;
 import net.marsh.soupdup.block.entity.SoupdUpBlockEntities;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
@@ -15,7 +13,7 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
-public class SoupBarrelBlockEntity extends BlockEntity{
+public class SoupBarrelBlockEntity extends BlockEntity {
     private ItemStack soup = ItemStack.EMPTY;
     public SoupBarrelBlockEntity(BlockPos pos, BlockState state) {
         super(SoupdUpBlockEntities.SOUP_BARREL_BE, pos, state);
@@ -35,27 +33,29 @@ public class SoupBarrelBlockEntity extends BlockEntity{
         this.soup = nbt.get("item", ItemStack.CODEC).orElse(ItemStack.EMPTY);
     }
 
-    public ItemStack getSoup() {
+    public ItemStack getSoupStack() {
         return this.soup;
     }
-    public Item getSoupType() {
+    public Item getSoupItem() {
         return this.soup.getItem();
     }
     public int getSoupCount() {
         return this.soup.getCount();
     }
     public void setSoup(ItemStack soup) {
-        System.out.println("balls");
         this.soup = soup.copy();
     }
     public void setSoupCount(Integer soup_count) {
         this.soup.setCount(soup_count);
     }
-    public void addSoupCount(int soup_count) {
-        soup.setCount(this.getSoupCount() + soup_count);
+    public void increaseSoupCount() {
+        soup.setCount(this.getSoupCount() + 1);
     }
-    public void removeSoupCount(int soup_count) {
-        soup.setCount(soup.getCount() - soup_count);
+    public void decreaseSoupCount() {
+        soup.setCount(soup.getCount() - 1);
+        if (this.soup.isEmpty()) {
+            this.setSoup(ItemStack.EMPTY);
+        }
     }
     public boolean isEmpty() {
         return this.soup.getCount() <= 0;

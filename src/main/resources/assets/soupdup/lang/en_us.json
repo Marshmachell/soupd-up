@@ -1,5 +1,5 @@
 {
-  "itemgroup.soupdup.soupd_up_items": "Soup'd Up: Soups",
+  "itemgroup.soupdup.soupd_up_items": "Soup'd Up",
 
   "item.soupdup.soup_barrel": "Soup Barrel",
 
@@ -9,6 +9,7 @@
   "item.soupdup.hearty_cod_soup": "Hearty Cod Soup",
   "item.soupdup.sea_soup": "Sea Soup",
   "item.soupdup.chorus_soup": "Chorus Soup",
+  "item.soupdup.mixed_suspicious_stew": "Mixed Suspicious Stew",
 
   "tag.item.soupdup.soup": "Soup"
 }

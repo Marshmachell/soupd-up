@@ -4,12 +4,13 @@
   "key": {
     "P": "#minecraft:planks",
     "S": "#minecraft:wooden_slabs",
-    "B": "minecraft:bowl"
+    "B": "minecraft:bowl",
+    "I": "minecraft:iron_ingot"
   },
   "pattern": [
     "PSP",
     "PBP",
-    "PSP"
+    "PIP"
   ],
   "result": {
     "count": 1,

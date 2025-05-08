@@ -7,11 +7,15 @@
 	"authors": [
 		"Marshmachell"
 	],
+	"contributors": [
+		"Falanta",
+		"trpplvn"
+	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
 		"sources": "https://github.com/Marshmachell/soupd-up"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/soupdup/icon.png",
 	"environment": "*",
 	"entrypoints": {
