@@ -3,11 +3,11 @@
   "category": "misc",
   "ingredients": [
     "minecraft:bone",
+    "minecraft:cod",
     [
       "minecraft:potato",
       "minecraft:carrot"
     ],
-    "minecraft:cod",
     "minecraft:bowl"
   ],
   "result": {
