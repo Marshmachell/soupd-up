@@ -2,6 +2,7 @@
   "itemgroup.soupdup.soupd_up_items": "Soup'd Up",
 
   "item.soupdup.soup_barrel": "Бочка для супа",
+  "block.soup_barrel.alert.contains_message": "Содержит: %s x%d",
   "block.soup_barrel.alert.invalid_soup": "Неверный тип супа.",
   "block.soup_barrel.alert.barrel_full": "Бочка заполнена.",
   "block.soup_barrel.alert.barrel_empty": "Бочка пуста.",
@@ -17,5 +18,6 @@
   "item.soupdup.chorus_soup": "Хорусовый суп",
   "item.soupdup.mixed_suspicious_stew": "Смешанное загадочное рагу",
 
-  "tag.item.soupdup.soup": "Суп"
-}
+  "tag.item.soupdup.soup": "Суп",
+  "modmenu.summaryTranslation.soupdup": "Хранение супов и смешивание загадочного рагу",
+  "modmenu.descriptionTranslation.soupdup": "Хранение супов и смешивание загадочного рагу. Например:\n • Бочка с супом может хранить до 54 единиц одного типа супа\n • Три различных эффекта в одном подозрительном рагу\n • Длительность эффектов можно увеличить, добавив красную пыль"}

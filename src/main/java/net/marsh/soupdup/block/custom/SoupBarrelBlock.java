@@ -68,6 +68,9 @@ public class SoupBarrelBlock extends BlockWithEntity {
             return this.susStewInteraction(stack, soupBarrel, serverPlayer, world, pos);
         } else if (isRedstone(stack)) {
             return this.redstoneInteraction(soupBarrel, state, serverPlayer, world, pos);
+        } else {
+            sendAlert(player, !soupBarrel.isEmpty() ? Text.translatable("block.soup_barrel.alert.contains_message", Text.translatable(soupBarrel.getSoupItem().getTranslationKey()), soupBarrel.getSoupCount()) : Text.translatable("block.soup_barrel.alert.barrel_empty"));
+            world.playSound(null, pos, SoundEvents.BLOCK_WOOD_HIT, SoundCategory.BLOCKS, 1.0f, 1.0f);
         }
 
         return ActionResult.SUCCESS;

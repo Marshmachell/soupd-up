@@ -2,6 +2,7 @@
   "itemgroup.soupdup.soupd_up_items": "Soup'd Up",
 
   "item.soupdup.soup_barrel": "Soup Barrel",
+  "block.soup_barrel.alert.contains_message": "Contains: %s x%d",
   "block.soup_barrel.alert.invalid_soup": "Invalid soup type.",
   "block.soup_barrel.alert.barrel_full": "Barrel is full.",
   "block.soup_barrel.alert.barrel_empty": "Barrel is empty.",
@@ -17,5 +18,8 @@
   "item.soupdup.chorus_soup": "Chorus Soup",
   "item.soupdup.mixed_suspicious_stew": "Mixed Suspicious Stew",
 
-  "tag.item.soupdup.soup": "Soup"
+  "tag.item.soupdup.soup": "Soup",
+
+  "modmenu.summaryTranslation.soupdup": "Storage soups and mixing suspicious stew",
+  "modmenu.descriptionTranslation.soupdup": "Storage soups and mixing suspicious stew. e.g.: \n • Can store up to 54 units of the same type of soup in Soup Barrel\n • Three various suspicious effects in one mixed suspicious stew\n • The duration of the suspicious effects can be increased by adding the redstone dust"
 }

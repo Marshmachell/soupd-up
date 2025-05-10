@@ -3,7 +3,7 @@
 	"id": "soupdup",
 	"version": "${version}",
 	"name": "Soup'd up",
-	"description": "so tasty soups..",
+	"description": "Storage and mixing suspicious stew",
 	"authors": [
 		"Marshmachell"
 	],
@@ -12,7 +12,7 @@
 		"trpplvn"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
+		"homepage": "https://modrinth.com/mod/soupd-up",
 		"sources": "https://github.com/Marshmachell/soupd-up"
 	},
 	"license": "MIT",
@@ -21,9 +21,6 @@
 	"entrypoints": {
 		"main": [
 			"net.marsh.soupdup.SoupdUp"
-		],
-		"fabric-datagen": [
-			"net.marsh.soupdup.SoupdUpDataGenerator"
 		],
 		"client": [
 			"net.marsh.soupdup.SoupdUpClient"
@@ -40,5 +37,12 @@
 	},
 	"suggests": {
 		"another-mod": "*"
+	},
+	"custom": {
+		"modmenu": {
+			"links": {
+				"modmenu.discord": "https://discord.gg/vUqErWHG8U"
+		}
 	}
+}
 }
