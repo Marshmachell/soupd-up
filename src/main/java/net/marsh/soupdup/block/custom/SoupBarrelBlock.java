@@ -1,6 +1,7 @@
 package net.marsh.soupdup.block.custom;
 
 import com.mojang.serialization.MapCodec;
+import net.marsh.soupdup.component.SoupdUpComponentTypes;
 import net.marsh.soupdup.block.entity.custom.SoupBarrelBlockEntity;
 import net.marsh.soupdup.SoupdUpTags;
 import net.minecraft.block.*;
@@ -18,6 +19,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.IntProperty;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
 import net.minecraft.util.hit.BlockHitResult;
@@ -26,7 +28,6 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Random;
 
@@ -65,6 +66,8 @@ public class SoupBarrelBlock extends BlockWithEntity {
             return this.bowlInteraction(stack, state, soupBarrel, serverPlayer, world, pos);
         } else if (isSusStew(stack)) {
             return this.susStewInteraction(stack, soupBarrel, serverPlayer, world, pos);
+        } else if (isRedstone(stack)) {
+            return this.redstoneInteraction(soupBarrel, state, serverPlayer, world, pos);
         }
 
         return ActionResult.SUCCESS;
@@ -74,6 +77,7 @@ public class SoupBarrelBlock extends BlockWithEntity {
         if (barrel.getSoupStack().isEmpty()) {
             barrel.setSoup(stack);
         } else if (!barrel.getSoupItem().equals(stack.getItem()) || barrel.isFull()) {
+            sendAlert(player, Text.translatable(barrel.isFull() ? "block.soup_barrel.alert.barrel_full" : "block.soup_barrel.alert.invalid_soup"));
             world.playSound(null, pos, SoundEvents.BLOCK_BARREL_CLOSE, SoundCategory.BLOCKS, 1.0f, 0.75f);
             return ActionResult.PASS;
         } else {
@@ -98,7 +102,13 @@ public class SoupBarrelBlock extends BlockWithEntity {
         else if (!barrel.getSoupItem().equals(stack.getItem())
                 || barrel.isFull()
                 || getSusEffects(barrelSoup).size() > 2
-                || getSusEffects(stack).size() > 1) {
+                || getSusEffects(stack).size() > 1)
+        {
+            sendAlert(player, Text.translatable(!barrel.getSoupItem().equals(stack.getItem()) ? "block.soup_barrel.alert.invalid_soup" :
+                    barrel.isFull() ? "block.soup_barrel.alert.barrel_full" :
+                            getSusEffects(barrelSoup).size() > 2 ? "block.soup_barrel.alert.barrel_enough_effects" :
+                                    getSusEffects(stack).size() > 1 ? "block.soup_barrel.alert.item_enough_effects" :
+                                            null));
             world.playSound(null, pos, SoundEvents.BLOCK_BARREL_CLOSE, SoundCategory.BLOCKS, 1.0f, 0.75f);
             return ActionResult.PASS;
         }
@@ -112,8 +122,19 @@ public class SoupBarrelBlock extends BlockWithEntity {
         world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_FILL, SoundCategory.BLOCKS, 1.0f, this.soundPitcher(barrel, 0.5f, 0.35f));
         return ActionResult.SUCCESS;
     }
+    private ActionResult redstoneInteraction(SoupBarrelBlockEntity soupBarrel, BlockState state, ServerPlayerEntity player, World world, BlockPos pos) {
+        ItemStack barrelSoup = soupBarrel.getSoupStack();
+        if (!isSusStew(barrelSoup) || isTimeUpgraded(barrelSoup)) {
+            sendAlert(player, Text.translatable(!isSusStew(barrelSoup) ? "block.soup_barrel.alert.invalid_soup" : isTimeUpgraded(barrelSoup) ? "block.soup_barrel.alert.already_time_upgraded" : null));
+        } else {
+            increaseSusEffectsTime(barrelSoup, 1.5f);
+            world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_FILL_DRAGONBREATH, SoundCategory.BLOCKS, 1.0f, 1.0f);
+            spawnCustomParticles(world, state, pos, List.of());
+        }
+        return ActionResult.SUCCESS;
+    }
 
-    public static void spawnSusParticles(World world, BlockState state, BlockPos pos, List<String> particles) {
+    public static void spawnCustomParticles(World world, BlockState state, BlockPos pos, @Nullable List<String> particles) {
         Random random = new Random();
 
         double x = pos.getX() + 0.5;
@@ -130,23 +151,32 @@ public class SoupBarrelBlock extends BlockWithEntity {
         double zi = axis == Direction.Axis.Z ? direction.getOffsetZ() * 0.65 : ofz;
 
         for (int i = 0; i < 3; i++) {
-            String color = particles.get(random.nextInt(particles.size()));
-            int[] rgb = hexToRgb(color);
-            ParticleEffect effect = EntityEffectParticleEffect.create(ParticleTypes.ENTITY_EFFECT, rgb[0], rgb[1], rgb[2]);
-
+            ParticleEffect effect;
+            if (particles != null && !particles.isEmpty()) {
+                String color = particles.get(random.nextInt(particles.size()));
+                int[] rgb = hexToRgb(color);
+                effect = EntityEffectParticleEffect.create(ParticleTypes.ENTITY_EFFECT, rgb[0], rgb[1], rgb[2]);
+            } else {
+                effect = DustParticleEffect.DEFAULT;
+            }
             ((ServerWorld) world).spawnParticles(effect, x + xi, y, z + zi, 0, ofx, 0, ofz, 0);
         }
     }
 
-    public static int[] hexToRgb(String hex) {
-        Color color = Color.decode(hex);
-        return new int[]{color.getRed(), color.getGreen(), color.getBlue()};
+    private static int[] hexToRgb(String hexColor) {
+        int color = (int) Long.parseLong(hexColor.substring(1), 16);
+        return new int[] {
+                (color >> 16) & 0xFF,
+                (color >> 8) & 0xFF,
+                color & 0xFF
+        };
     }
 
     public ActionResult bowlInteraction(ItemStack stack, BlockState state, SoupBarrelBlockEntity barrel, ServerPlayerEntity player, World world, BlockPos pos) {
         this.changeSpigotState(state, world, pos);
 
         if (barrel.isEmpty()) {
+            sendAlert(player, Text.translatable("block.soup_barrel.alert.barrel_empty"));
             world.playSound(null, pos, SoundEvents.BLOCK_CHAIN_BREAK, SoundCategory.BLOCKS, 1.0f, 1.25f);
             return ActionResult.SUCCESS;
         }
@@ -174,13 +204,13 @@ public class SoupBarrelBlock extends BlockWithEntity {
         soup.setCount(1);
         if (isSusStew(soupStack)) {
             if (getSusEffects(soupStack).size() > 1) {soup.set(DataComponentTypes.ITEM_NAME, Text.translatable("item.soupdup.mixed_suspicious_stew"));}
-            spawnSusParticles(world, world.getBlockState(pos), pos, DEFAULT_PARTICLE_COLORS);
+            spawnCustomParticles(world, world.getBlockState(pos), pos, DEFAULT_PARTICLE_COLORS);
         }
         player.giveOrDropStack(soup);
     }
 
-    public void sendAlert(PlayerEntity player, String alert) {
-        player.sendMessage(Text.of(alert), true);
+    public void sendAlert(PlayerEntity player, MutableText alert) {
+        player.sendMessage(alert, true);
     }
 
     public void changeSpigotState(BlockState state, World world, BlockPos pos) {
@@ -196,6 +226,12 @@ public class SoupBarrelBlock extends BlockWithEntity {
 
     public boolean isBowl(ItemStack stack) {
         return stack.getItem() == Items.BOWL;
+    }
+    public boolean isRedstone(ItemStack stack) {
+        return stack.getItem() == Items.REDSTONE;
+    }
+    public boolean isTimeUpgraded(ItemStack stack) {
+        return Boolean.TRUE.equals(stack.getComponents().get(SoupdUpComponentTypes.TIME_UPGRADED));
     }
 
     @Override
@@ -252,11 +288,9 @@ public class SoupBarrelBlock extends BlockWithEntity {
         builder.add(SPIGOT, FACING);
     }
 
-    @Override
+    /*@Override
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, net.minecraft.util.math.random.Random random) {
-        SoupBarrelBlockEntity barrel = (SoupBarrelBlockEntity) world.getBlockEntity(pos);
-
-        if (isSusStew(barrel.getSoupStack()) && random.nextDouble() < 0.075) {
+        if (state.get(SPIGOT).equals(0) && random.nextDouble() < 0.075) {
             double x = pos.getX() + 0.5;
             double y = pos.getY() + 0.125;
             double z = pos.getZ() + 0.5;
@@ -279,5 +313,5 @@ public class SoupBarrelBlock extends BlockWithEntity {
                 world.addParticleClient(effect, x + xi, y, z + zi, 0, ofx, 0);
             }
         }
-    }
+    }*/
 }

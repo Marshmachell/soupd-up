@@ -2,6 +2,12 @@
   "itemgroup.soupdup.soupd_up_items": "Soup'd Up",
 
   "item.soupdup.soup_barrel": "Бочка для супа",
+  "block.soup_barrel.alert.invalid_soup": "Неверный тип супа.",
+  "block.soup_barrel.alert.barrel_full": "Бочка заполнена.",
+  "block.soup_barrel.alert.barrel_empty": "Бочка пуста.",
+  "block.soup_barrel.alert.barrel_enough_effects": "Загадочное рагу в бочке уже содержит достаточное кол-во эффектов.",
+  "block.soup_barrel.alert.item_enough_effects": "Загадочное рагу в руке содержит слишком много эффектов!",
+  "block.soup_barrel.alert.already_time_upgraded": "Загадочное рагу в бочке уже улучшено!",
 
   "item.soupdup.salmon_soup": "Суп из лосося",
   "item.soupdup.hearty_salmon_soup": "Сытный суп из лосося",

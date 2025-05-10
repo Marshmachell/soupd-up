@@ -2,6 +2,12 @@
   "itemgroup.soupdup.soupd_up_items": "Soup'd Up",
 
   "item.soupdup.soup_barrel": "Soup Barrel",
+  "block.soup_barrel.alert.invalid_soup": "Invalid soup type.",
+  "block.soup_barrel.alert.barrel_full": "Barrel is full.",
+  "block.soup_barrel.alert.barrel_empty": "Barrel is empty.",
+  "block.soup_barrel.alert.barrel_enough_effects": "Suspicious Stew already contains enough effects!",
+  "block.soup_barrel.alert.item_enough_effects": "Suspicious Stew in hand contains too many effects!",
+  "block.soup_barrel.alert.already_time_upgraded": "Suspicious Stew already upgraded",
 
   "item.soupdup.salmon_soup": "Salmon Soup",
   "item.soupdup.hearty_salmon_soup": "Hearty Salmon Soup",
