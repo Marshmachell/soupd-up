@@ -67,7 +67,7 @@ public class SoupBarrelBlock extends BlockWithEntity {
         } else if (isSusStew(stack)) {
             return this.susStewInteraction(stack, soupBarrel, serverPlayer, world, pos);
         } else if (isRedstone(stack)) {
-            return this.redstoneInteraction(soupBarrel, state, serverPlayer, world, pos);
+            return this.redstoneInteraction(stack, soupBarrel, state, serverPlayer, world, pos);
         } else {
             sendAlert(player, !soupBarrel.isEmpty() ? Text.translatable("block.soup_barrel.alert.contains_message", Text.translatable(soupBarrel.getSoupItem().getTranslationKey()), soupBarrel.getSoupCount()) : Text.translatable("block.soup_barrel.alert.barrel_empty"));
             world.playSound(null, pos, SoundEvents.BLOCK_WOOD_HIT, SoundCategory.BLOCKS, 1.0f, 1.0f);
@@ -125,8 +125,9 @@ public class SoupBarrelBlock extends BlockWithEntity {
         world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_FILL, SoundCategory.BLOCKS, 1.0f, this.soundPitcher(barrel, 0.5f, 0.35f));
         return ActionResult.SUCCESS;
     }
-    private ActionResult redstoneInteraction(SoupBarrelBlockEntity soupBarrel, BlockState state, ServerPlayerEntity player, World world, BlockPos pos) {
+    private ActionResult redstoneInteraction(ItemStack stack, SoupBarrelBlockEntity soupBarrel, BlockState state, ServerPlayerEntity player, World world, BlockPos pos) {
         ItemStack barrelSoup = soupBarrel.getSoupStack();
+        stack.decrementUnlessCreative(1, player);
         if (!isSusStew(barrelSoup) || isTimeUpgraded(barrelSoup)) {
             sendAlert(player, Text.translatable(!isSusStew(barrelSoup) ? "block.soup_barrel.alert.invalid_soup" : isTimeUpgraded(barrelSoup) ? "block.soup_barrel.alert.already_time_upgraded" : null));
         } else {
